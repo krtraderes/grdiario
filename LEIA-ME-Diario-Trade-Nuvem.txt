@@ -1,0 +1,27 @@
+# KR Traders — diário com login e sincronização
+
+Este pacote sincroniza o diário de trades, estratégias, observações, perfil do operacional e parâmetros de risco no Supabase. Cada login tem uma carteira independente; os mesmos dados aparecem nos aparelhos em que a pessoa entrar com a mesma conta.
+
+## Use um projeto Supabase separado do CRM
+
+1. Crie um novo projeto Supabase dedicado ao diário de trades. Ele terá URL, chave, usuários e banco próprios; não use o projeto do CRM.
+2. Abra **SQL Editor** nesse novo projeto, cole e execute `supabase-trade-setup.sql`.
+3. Em **Project Settings → API Keys**, copie a Project URL completa (`https://...supabase.co`) e a chave publicável com prefixo `sb_publishable_`.
+4. Abra `config.js` e substitua os dois valores de exemplo pela URL e chave desse novo projeto. Não use região, `service_role` ou chave `sb_secret_`.
+5. Em **Authentication → Sign In / Providers**, mantenha Email habilitado. Para controlar os acessos, mantenha o cadastro público desabilitado e crie cada login em **Authentication → Users**. Se preferir permitir que cada pessoa crie o próprio acesso pela tela, habilite signups no projeto.
+6. Publique `Dashboard_Risco_Trade.html`, `config.js` e `supabase-trade-setup.sql` na mesma pasta do GitHub Pages. Abra o HTML publicado pelo navegador e entre com a conta criada nesse projeto.
+7. Para acessar em outro PC ou celular, abra o mesmo endereço e entre com o mesmo login do projeto do diário.
+
+Nunca coloque uma chave `service_role` ou `sb_secret_` no HTML ou no GitHub. A chave `sb_publishable_` é destinada ao navegador; os dados ficam protegidos pelas políticas RLS do SQL.
+
+## Dados locais existentes
+
+Na primeira entrada, se a conta ainda não tiver registros na nuvem e o navegador encontrar um diário local com operações ou parâmetros próprios, será perguntado se deseja copiar os dados para essa conta. Faça isso somente na conta que deve receber os registros. Também é possível baixar um backup JSON antes da migração.
+
+## Observações
+
+- A sincronização exige internet. O indicador no topo mostra quando as alterações foram sincronizadas.
+- Cada usuário pode ver e editar somente a própria carteira. Contas diferentes ficam separadas, incluindo estratégias e configurações.
+- O GitHub Pages hospeda a tela de login; a autenticação e os dados pertencem ao novo projeto Supabase.
+- Evite editar a mesma carteira simultaneamente em dois aparelhos; o diário sincroniza a carteira completa ao salvar.
+- O HTML local aberto diretamente por `file://` pode ter restrições do navegador. Para usar autenticação e sincronização, publique em HTTPS (por exemplo, GitHub Pages).
